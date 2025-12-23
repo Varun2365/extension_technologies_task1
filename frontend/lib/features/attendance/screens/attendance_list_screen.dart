@@ -99,7 +99,7 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
     if (dateStr == null) return 'NA';
     try {
       final date = DateTime.parse(dateStr);
-      return '${date.day}${date.month}${date.year}';
+      return '${date.day}/${date.month}/${date.year}';
     } catch (e) {
       return dateStr;
     }
@@ -160,7 +160,7 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                                 Text(
                                   _fromDate == null
                                       ? 'Select date'
-                                      : '${_fromDate!.day}${_fromDate!.month}${_fromDate!.year}',
+                                      : '${_fromDate!.day}/${_fromDate!.month}/${_fromDate!.year}',
                                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
                               ],
@@ -194,7 +194,7 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                                 Text(
                                   _toDate == null
                                       ? 'Select date'
-                                      : '${_toDate!.day}${_toDate!.month}${_toDate!.year}',
+                                      : '${_toDate!.day}/${_toDate!.month}/${_toDate!.year}',
                                   style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
                                 ),
                               ],
@@ -355,7 +355,7 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                           if (_fromDate != null && _toDate != null) ...[
                             const SizedBox(height: 8),
                             Text(
-                              'Selected: ${_fromDate!.day}${_fromDate!.month}${_fromDate!.year} to ${_toDate!.day}${_toDate!.month}${_toDate!.year}',
+                              'Selected: ${_fromDate!.day}/${_fromDate!.month}/${_fromDate!.year} to ${_toDate!.day}/${_toDate!.month}/${_toDate!.year}',
                               style: TextStyle(color: Colors.grey[600]),
                             ),
                             Text(
@@ -386,7 +386,7 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                             ),
                             if (_fromDate != null && _toDate != null)
                               Text(
-                                '${_fromDate!.day}${_fromDate!.month}${_fromDate!.year} - ${_toDate!.day}${_toDate!.month}${_toDate!.year}',
+                                '${_fromDate!.day}/${_fromDate!.month}/${_fromDate!.year} - ${_toDate!.day}/${_toDate!.month}/${_toDate!.year}',
                                 style: TextStyle(
                                   fontSize: 12,
                                   color: Colors.grey[700],
@@ -425,6 +425,9 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                       
                       return Card(
                         margin: const EdgeInsets.only(bottom: 12),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                         child: Padding(
                           padding: const EdgeInsets.all(16),
                           child: Column(

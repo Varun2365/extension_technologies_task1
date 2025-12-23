@@ -23,7 +23,7 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
     if (dateStr == null) return 'NA';
     try {
       final date = DateTime.parse(dateStr);
-      return '${date.day}${date.month}${date.year}';
+      return '${date.day}/${date.month}/${date.year}';
     } catch (e) {
       return dateStr;
     }
@@ -105,6 +105,9 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
                 final leave = state.leaveList[index];
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(

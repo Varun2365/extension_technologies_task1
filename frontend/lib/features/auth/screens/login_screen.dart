@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:task_1_attendance/theme/colors.dart';
 import 'package:task_1_attendance/widgets/text_field.dart';
+import 'package:task_1_attendance/app/app_routes.dart';
 
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
@@ -22,7 +23,7 @@ class LoginScreen extends StatelessWidget {
         body: BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthSuccess) {
-          Navigator.pushReplacementNamed(context, 'home');
+          Navigator.pushReplacementNamed(context, AppRoutes.home);
         } else if (state is AuthFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(state.error)),
@@ -56,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                 ),
                 Center(
                     child: SvgPicture.asset(
-                  'assetsimageslogin.svg',
+                  'assets/images/login.svg',
                   height: 240,
                 )),
                 SizedBox(
@@ -122,7 +123,7 @@ class LoginScreen extends StatelessWidget {
                     Text("Dont Have an Account? "),
                     InkWell(
                       onTap: (){
-                        Navigator.pushReplacementNamed(context, 'signup');
+                        Navigator.pushReplacementNamed(context, AppRoutes.signup);
                       },
                       child: Padding(
                         padding: EdgeInsets.symmetric(horizontal: 3),

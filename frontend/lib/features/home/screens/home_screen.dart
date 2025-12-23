@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:task_1_attendance/theme/colors.dart';
 import 'package:task_1_attendance/core/storage_service.dart';
+import 'package:task_1_attendance/app/app_routes.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 import '../bloc/home_events.dart';
@@ -60,7 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (shouldLogout == true) {
       await StorageService.clearToken();
       if (mounted) {
-        Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, AppRoutes.login, (route) => false);
       }
     }
   }
@@ -202,15 +203,15 @@ class _HomeScreenState extends State<HomeScreen> {
                         const SizedBox(height: 16),
                         Row(
                           children: [
-                            Expanded(child: _buildQuickActionButton('Attendance', Icons.calendar_today, () => Navigator.pushNamed(context, 'attendance-list'))),
+                            Expanded(child: _buildQuickActionButton('Attendance', Icons.calendar_today, () => Navigator.pushNamed(context, AppRoutes.attendanceList))),
                             const SizedBox(width: 12),
-                            Expanded(child: _buildQuickActionButton('Leaves', Icons.event_note, () => Navigator.pushNamed(context, 'leave-list'))),
+                            Expanded(child: _buildQuickActionButton('Leaves', Icons.event_note, () => Navigator.pushNamed(context, AppRoutes.leaveList))),
                           ],
                         ),
                         const SizedBox(height: 12),
                         SizedBox(
                           width: double.infinity,
-                          child: _buildQuickActionButton('Apply for Leave', Icons.add_circle_outline, () => Navigator.pushNamed(context, 'leave-apply')),
+                          child: _buildQuickActionButton('Apply for Leave', Icons.add_circle_outline, () => Navigator.pushNamed(context, AppRoutes.leaveApply)),
                         ),
                       ],
                     ),

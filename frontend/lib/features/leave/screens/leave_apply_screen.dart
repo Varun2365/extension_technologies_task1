@@ -186,7 +186,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     child: Text(
                       _fromDate == null
                           ? 'Select date'
-                          : '${_fromDate!.day}${_fromDate!.month}${_fromDate!.year}',
+                          : '${_fromDate!.day}/${_fromDate!.month}/${_fromDate!.year}',
                     ),
                   ),
                 ),
@@ -217,7 +217,7 @@ class _LeaveApplyScreenState extends State<LeaveApplyScreen> {
                     child: Text(
                       _toDate == null
                           ? 'Select date'
-                          : '${_toDate!.day}${_toDate!.month}${_toDate!.year}',
+                          : '${_toDate!.day}/${_toDate!.month}/${_toDate!.year}',
                     ),
                   ),
                 ),

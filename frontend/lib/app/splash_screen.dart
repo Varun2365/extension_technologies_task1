@@ -34,8 +34,17 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: ColorPalette.accent,
       body: const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text("Extension",style: TextStyle(color: Colors.white,fontSize: 40)),
+            Text("Technologies",style: TextStyle(color: Colors.white,fontSize: 25,fontWeight: FontWeight.w300)),
+            SizedBox(height: 40,),
+            CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
+          ],
         ),
       ),
     );
