@@ -65,8 +65,8 @@ class LoginScreen extends StatelessWidget {
                 ),
                 AppTextField(
                     controller: idController,
-                    label: "Employee ID",
-                    hint: "Enter Your ID",
+                    label: "Email ID",
+                    hint: "Enter Your Email ID",
                     icon: Icons.email),
                 SizedBox(
                   height: 15,
