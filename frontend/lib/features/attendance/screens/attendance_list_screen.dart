@@ -38,28 +38,21 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
   }
 
   Future<void> _selectFromDate() async {
-    final maxDate = _toDate?.subtract(const Duration(days: 30)) ?? DateTime.now();
-    final firstDate = maxDate.isBefore(DateTime(2020)) ? DateTime(2020) : maxDate;
-    
     final picked = await showDatePicker(
       context: context,
       initialDate: _fromDate ?? DateTime.now(),
-      firstDate: firstDate,
+      firstDate: DateTime(2020),
       lastDate: _toDate ?? DateTime.now(),
     );
     if (picked != null) {
       setState(() {
         _fromDate = picked;
-        if (_toDate != null) {
-          final daysDifference = _toDate!.difference(_fromDate!).inDays;
-          if (daysDifference > 30) {
-            _toDate = _fromDate!.add(const Duration(days: 30));
-          } else if (_toDate!.isBefore(_fromDate!)) {
-            _toDate = _fromDate;
-          }
+        // If toDate is before fromDate, adjust it
+        if (_toDate != null && _toDate!.isBefore(_fromDate!)) {
+          _toDate = _fromDate;
         }
       });
-      _loadAttendance();
+      _validateAndLoad();
     }
   }
 
@@ -71,28 +64,50 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
       return;
     }
 
-    final maxDate = _fromDate!.add(const Duration(days: 30));
-    final lastDate = maxDate.isAfter(DateTime.now()) ? DateTime.now() : maxDate;
-
     final picked = await showDatePicker(
       context: context,
       initialDate: _toDate ?? _fromDate!,
       firstDate: _fromDate!,
-      lastDate: lastDate,
+      lastDate: DateTime.now(),
     );
     if (picked != null) {
-      final daysDifference = picked.difference(_fromDate!).inDays;
-      if (daysDifference > 30) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Date range cannot exceed 30 days')),
-        );
-        return;
-      }
       setState(() {
         _toDate = picked;
       });
-      _loadAttendance();
+      _validateAndLoad();
     }
+  }
+
+  void _validateAndLoad() {
+    if (_fromDate != null && _toDate != null) {
+      final daysDifference = _toDate!.difference(_fromDate!).inDays + 1;
+      if (daysDifference > 30) {
+        _showDateRangeDialog(daysDifference);
+      } else {
+        _loadAttendance();
+      }
+    }
+  }
+
+  Future<void> _showDateRangeDialog(int days) async {
+    await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Date Range Exceeded'),
+        content: Text(
+          'The selected date range is $days days, which exceeds the maximum limit of 30 days. Please select a date range within 30 days.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text(
+              'OK',
+              style: TextStyle(color: ColorPalette.accent),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   String _formatDate(String? dateStr) {
