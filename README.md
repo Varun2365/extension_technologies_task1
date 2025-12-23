@@ -134,10 +134,10 @@ backend+frontend/
 
 3. **Create `.env` file** in the `backend` directory:
    ```env
-   PORT=3000
-   MONGO_URL=mongodb://localhost:27017/attendance_db
-   JWT_SECRET=your_super_secret_jwt_key_here
-   JWT_EXPIRY=7d
+   PORT=9999
+   MONGO_URL=mongodb://localhost:27017/spi
+   JWT_SECRET=VarunVarun23
+   JWT_EXPIRY=30d
    ```
 
 4. **Start MongoDB** (if running locally)

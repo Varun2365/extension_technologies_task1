@@ -1,0 +1,395 @@
+{
+	"info": {
+		"_postman_id": "attendance-leave-api-collection",
+		"name": "Employee Attendance & Leave Management API",
+		"description": "Complete API collection for Employee Attendance and Leave Management System\n\n**Base URL:** http://69.62.77.6:9999\n\n**Note:** All protected routes require JWT token in Authorization header.\n\n**Setup Instructions:**\n1. Import this collection into Postman\n2. Set the `baseUrl` variable to your server URL (default: http://69.62.77.6:9999)\n3. Use the Signup or Login endpoint to get a token\n4. The token will be automatically saved to the `authToken` variable\n5. All protected routes will use this token automatically",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Signup",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"        console.log(\"Token saved to collection variable\");",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"John Doe\",\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\",\n  \"employeeId\": \"EMP001\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/signup",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						},
+						"description": "Register a new employee account.\n\n**Request Body:**\n- `name` (required): Employee full name\n- `email` (required): Unique email address\n- `password` (required): Password (will be hashed)\n- `employeeId` (required): Unique employee ID\n\n**Response:**\n- Returns user details and JWT token on success\n- Token is automatically saved to collection variable"
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    if (jsonData.token) {",
+									"        pm.collectionVariables.set(\"authToken\", jsonData.token);",
+									"        console.log(\"Token saved to collection variable\");",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.doe@example.com\",\n  \"password\": \"securePassword123\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						},
+						"description": "Authenticate user and get JWT token.\n\n**Request Body:**\n- `email` (required): User email\n- `password` (required): User password\n\n**Response:**\n- Returns user details and JWT token on success\n- Token is automatically saved to collection variable for use in protected routes"
+					},
+					"response": []
+				}
+			],
+			"description": "Authentication endpoints for user registration and login"
+		},
+		{
+			"name": "Attendance",
+			"item": [
+				{
+					"name": "Check In",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Auto-set authorization header from collection variable",
+									"pm.request.headers.add({",
+									"    key: 'Authorization',",
+									"    value: 'Bearer ' + pm.collectionVariables.get('authToken')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/check-in",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								"check-in"
+							]
+						},
+						"description": "Record daily check-in time for the authenticated user.\n\n**Authentication:** Required (JWT token)\n\n**Response:**\n- Returns success message and check-in timestamp\n- Prevents duplicate check-ins for the same day"
+					},
+					"response": []
+				},
+				{
+					"name": "Check Out",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Auto-set authorization header from collection variable",
+									"pm.request.headers.add({",
+									"    key: 'Authorization',",
+									"    value: 'Bearer ' + pm.collectionVariables.get('authToken')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance/check-out",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance",
+								"check-out"
+							]
+						},
+						"description": "Record daily check-out time for the authenticated user.\n\n**Authentication:** Required (JWT token)\n\n**Requirements:**\n- User must have checked in earlier on the same day\n\n**Response:**\n- Returns success message and check-out timestamp\n- Prevents duplicate check-outs for the same day"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Attendance Records",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Auto-set authorization header from collection variable",
+									"pm.request.headers.add({",
+									"    key: 'Authorization',",
+									"    value: 'Bearer ' + pm.collectionVariables.get('authToken')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/attendance?from=2024-01-01&to=2024-01-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"attendance"
+							],
+							"query": [
+								{
+									"key": "from",
+									"value": "2024-01-01",
+									"description": "Start date (YYYY-MM-DD)"
+								},
+								{
+									"key": "to",
+									"value": "2024-01-31",
+									"description": "End date (YYYY-MM-DD)"
+								}
+							]
+						},
+						"description": "Get attendance records for a specific date range.\n\n**Authentication:** Required (JWT token)\n\n**Query Parameters:**\n- `from` (required): Start date in YYYY-MM-DD format\n- `to` (required): End date in YYYY-MM-DD format\n\n**Response:**\n- Returns array of attendance records with check-in/check-out times\n- Records are sorted by date in ascending order"
+					},
+					"response": []
+				}
+			],
+			"description": "Attendance management endpoints. All routes require authentication."
+		},
+		{
+			"name": "Leave",
+			"item": [
+				{
+					"name": "Apply for Leave",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Auto-set authorization header from collection variable",
+									"pm.request.headers.add({",
+									"    key: 'Authorization',",
+									"    value: 'Bearer ' + pm.collectionVariables.get('authToken')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"fromDate\": \"2024-02-01\",\n  \"toDate\": \"2024-02-03\",\n  \"reason\": \"Family vacation\",\n  \"type\": \"casual\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/leave/apply",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave",
+								"apply"
+							]
+						},
+						"description": "Submit a leave application.\n\n**Authentication:** Required (JWT token)\n\n**Request Body:**\n- `fromDate` (required): Start date in YYYY-MM-DD format\n- `toDate` (required): End date in YYYY-MM-DD format\n- `reason` (required): Reason for leave\n- `type` (required): Leave type - one of: `sick`, `casual`, `other`\n\n**Validation:**\n- Date range must be valid (fromDate <= toDate)\n- No overlapping leaves with existing approved/pending leaves\n\n**Response:**\n- Returns leave application details\n- Status will be 'pending' initially\n- Leave will be processed by cron job within 1 minute"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Leave List",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Auto-set authorization header from collection variable",
+									"pm.request.headers.add({",
+									"    key: 'Authorization',",
+									"    value: 'Bearer ' + pm.collectionVariables.get('authToken')",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{authToken}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/api/leave/list",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"leave",
+								"list"
+							]
+						},
+						"description": "Get all leave applications for the authenticated user.\n\n**Authentication:** Required (JWT token)\n\n**Response:**\n- Returns array of all leave applications\n- Sorted by applied date in descending order (newest first)\n- Includes leave status: `pending`, `approved`, or `rejected`"
+					},
+					"response": []
+				}
+			],
+			"description": "Leave management endpoints. All routes require authentication."
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://69.62.77.6:9999",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
