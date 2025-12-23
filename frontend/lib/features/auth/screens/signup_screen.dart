@@ -1,0 +1,165 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:task_1_attendance/theme/colors.dart';
+import 'package:task_1_attendance/widgets/text_field.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_event.dart';
+import '../bloc/auth_state.dart';
+
+class SignupScreen extends StatelessWidget {
+  SignupScreen({super.key});
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+  final TextEditingController idController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            Navigator.pushReplacementNamed(context, 'home');
+          } else if (state is AuthFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(state.error)),
+            );
+          }
+        },
+        child: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            final isLoading = state is AuthLoading;
+            return Padding(
+              padding: EdgeInsets.all(20),
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    const SizedBox(
+                      height: 60,
+                    ),
+                    Text(
+                      "Signup",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 35),
+                    ),
+                    Text(
+                  "Create an Account",
+                  style: TextStyle(fontWeight: FontWeight.w300, fontSize: 20),
+                ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Center(
+                        child: SvgPicture.asset(
+                      'assetsimagessignup.svg',
+                      height: 200,
+                    )),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    AppTextField(
+                        controller: nameController,
+                        label: "Name",
+                        hint: "Enter Your Name",
+                        icon: Icons.emoji_people),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    AppTextField(
+                        controller: emailController,
+                        label: "Email",
+                        hint: "Enter Your Email ID",
+                        icon: Icons.email),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    AppTextField(
+                        controller: passwordController,
+                        label: "Password",
+                        hint: "Password",
+                        icon: Icons.password,
+                        obscureText: true),
+                    SizedBox(
+                      height: 15,
+                    ),
+                    AppTextField(
+                        controller: idController,
+                        label: "Employee ID",
+                        hint: "Enter Your Employee ID",
+                        icon: Icons.business),
+                    SizedBox(
+                      height: 35,
+                    ),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: ColorPalette.accent,
+                          foregroundColor: Colors.white,
+                          disabledBackgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5),
+                          ),
+                          elevation: 2,
+                        ),
+                        onPressed: isLoading
+                            ? null
+                            : () {
+                                context.read<AuthBloc>().add(
+                                      SignupButtonPressed(
+                                        name: nameController.text.trim(),
+                                        email: emailController.text.trim(),
+                                        password:
+                                            passwordController.text.trim(),
+                                        employeeId: idController.text.trim(),
+                                      ),
+                                    );
+                              },
+                        icon: isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                  strokeWidth: 2,
+                                ))
+                            : const Icon(Icons.person_add, size: 20),
+                        label: Text(isLoading ? 'Creating...' : 'Sign Up'),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Already Have an Account? "),
+                    InkWell(
+                      onTap: (){
+                        Navigator.pushReplacementNamed(context, 'login');
+                      },
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 3),
+                        child: Text("Login",
+                        style: TextStyle(color: ColorPalette.accent,fontWeight: FontWeight.w600),),
+                      ),
+                    )
+                  ],
+                )
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+      ),
+    );
+  }
+}
