@@ -167,6 +167,7 @@ class _HomeScreenState extends State<HomeScreen> {
               if (state is HomeLoaded) {
                 final isLoading = state is HomeLoading;
                 return Container(
+                  height: MediaQuery.of(context).size.height,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
@@ -177,7 +178,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   child: SingleChildScrollView(
                     physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 40),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -259,7 +260,23 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(Icons.email_outlined, size: 16, color: Colors.grey[600]),
               const SizedBox(width: 8),
-              Text(state.email, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+              Expanded(
+                child: Text(state.email, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+              ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 12),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(color: Colors.grey[100], borderRadius: BorderRadius.circular(8)),
+          child: Row(
+            children: [
+              Icon(Icons.badge_outlined, size: 16, color: Colors.grey[600]),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(state.employeeId, style: TextStyle(fontSize: 14, color: Colors.grey[700])),
+              ),
             ],
           ),
         ),

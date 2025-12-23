@@ -7,7 +7,7 @@ class AttendanceService {
   Future<Map<String, String>> _getHeaders() async {
     final token = await StorageService.getToken();
     return {
-      'Content-Type': 'applicationjson',
+      'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
   }
