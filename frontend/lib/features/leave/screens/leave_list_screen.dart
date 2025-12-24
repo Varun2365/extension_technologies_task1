@@ -19,10 +19,34 @@ class _LeaveListScreenState extends State<LeaveListScreen> {
     context.read<LeaveBloc>().add(LoadLeaveList());
   }
 
+  /// Convert UTC date to IST (UTC+5:30)
+  DateTime _toIST(DateTime utcDate) {
+    return utcDate.add(const Duration(hours: 5, minutes: 30));
+  }
+
   String _formatDate(String? dateStr) {
     if (dateStr == null) return 'NA';
     try {
-      final date = DateTime.parse(dateStr);
+      DateTime date;
+      // If date string contains time or timezone info, parse as UTC and convert to IST
+      if (dateStr.contains('T') || dateStr.contains('Z') || dateStr.contains('+') || dateStr.contains('-', 10)) {
+        // Parse as UTC
+        date = DateTime.parse(dateStr).toUtc();
+        // Convert to IST (UTC+5:30)
+        date = _toIST(date);
+      } else {
+        // If it's just a date string (YYYY-MM-DD), parse it as local date
+        final parts = dateStr.split('-');
+        if (parts.length == 3) {
+          date = DateTime(
+            int.parse(parts[0]),
+            int.parse(parts[1]),
+            int.parse(parts[2]),
+          );
+        } else {
+          date = DateTime.parse(dateStr);
+        }
+      }
       return '${date.day}/${date.month}/${date.year}';
     } catch (e) {
       return dateStr;

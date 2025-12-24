@@ -110,10 +110,35 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
     );
   }
 
+  /// Convert UTC date to IST (UTC+5:30)
+  DateTime _toIST(DateTime utcDate) {
+    return utcDate.add(const Duration(hours: 5, minutes: 30));
+  }
+
   String _formatDate(String? dateStr) {
     if (dateStr == null) return 'NA';
     try {
-      final date = DateTime.parse(dateStr);
+      DateTime date;
+      // If date string contains time or timezone info, parse as UTC and convert to IST
+      if (dateStr.contains('T') || dateStr.contains('Z') || dateStr.contains('+') || dateStr.contains('-', 10)) {
+        // Parse as UTC
+        date = DateTime.parse(dateStr).toUtc();
+        // Convert to IST (UTC+5:30)
+        date = _toIST(date);
+      } else {
+        // If it's just a date string (YYYY-MM-DD), parse it as local date
+        // Since backend stores dates in IST, we interpret it as IST date
+        final parts = dateStr.split('-');
+        if (parts.length == 3) {
+          date = DateTime(
+            int.parse(parts[0]),
+            int.parse(parts[1]),
+            int.parse(parts[2]),
+          );
+        } else {
+          date = DateTime.parse(dateStr);
+        }
+      }
       return '${date.day}/${date.month}/${date.year}';
     } catch (e) {
       return dateStr;
@@ -123,7 +148,9 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
   String _formatTime(String? timeStr) {
     if (timeStr == null) return 'NA';
     try {
-      final date = DateTime.parse(timeStr);
+      // Parse as UTC and convert to IST
+      DateTime date = DateTime.parse(timeStr).toUtc();
+      date = _toIST(date);
       return '${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}';
     } catch (e) {
       return timeStr;
@@ -283,7 +310,24 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                                          record['checkOutTime']?.toString().split('T')[0];
                         if (dateStr != null) {
                           try {
-                            final date = DateTime.parse(dateStr);
+                            DateTime date;
+                            // Parse date and convert to IST if it has time info
+                            if (dateStr.contains('T') || dateStr.contains('Z')) {
+                              date = DateTime.parse(dateStr).toUtc();
+                              date = _toIST(date);
+                            } else {
+                              // If it's just a date string, parse as local date
+                              final parts = dateStr.split('-');
+                              if (parts.length == 3) {
+                                date = DateTime(
+                                  int.parse(parts[0]),
+                                  int.parse(parts[1]),
+                                  int.parse(parts[2]),
+                                );
+                              } else {
+                                date = DateTime.parse(dateStr);
+                              }
+                            }
                             final key = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
                             attendanceMap[key] = record;
                           } catch (e) {
@@ -299,8 +343,38 @@ class _AttendanceListScreenState extends State<AttendanceListScreen> {
                           final leaveToStr = leave['toDate']?.toString();
                           if (leaveFromStr != null && leaveToStr != null) {
                             try {
-                              final leaveFrom = DateTime.parse(leaveFromStr);
-                              final leaveTo = DateTime.parse(leaveToStr);
+                              DateTime leaveFrom, leaveTo;
+                              // Parse and convert to IST if needed
+                              if (leaveFromStr.contains('T') || leaveFromStr.contains('Z')) {
+                                leaveFrom = _toIST(DateTime.parse(leaveFromStr).toUtc());
+                              } else {
+                                final parts = leaveFromStr.split('-');
+                                if (parts.length == 3) {
+                                  leaveFrom = DateTime(
+                                    int.parse(parts[0]),
+                                    int.parse(parts[1]),
+                                    int.parse(parts[2]),
+                                  );
+                                } else {
+                                  leaveFrom = DateTime.parse(leaveFromStr);
+                                }
+                              }
+                              
+                              if (leaveToStr.contains('T') || leaveToStr.contains('Z')) {
+                                leaveTo = _toIST(DateTime.parse(leaveToStr).toUtc());
+                              } else {
+                                final parts = leaveToStr.split('-');
+                                if (parts.length == 3) {
+                                  leaveTo = DateTime(
+                                    int.parse(parts[0]),
+                                    int.parse(parts[1]),
+                                    int.parse(parts[2]),
+                                  );
+                                } else {
+                                  leaveTo = DateTime.parse(leaveToStr);
+                                }
+                              }
+                              
                               var current = DateTime(leaveFrom.year, leaveFrom.month, leaveFrom.day);
                               final end = DateTime(leaveTo.year, leaveTo.month, leaveTo.day);
                               
